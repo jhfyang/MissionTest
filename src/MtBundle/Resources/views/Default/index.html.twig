@@ -1,0 +1,21 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+    {% stylesheets 'bundles/mt/css/*' filter='cssrewrite' output='css/compiled/mt.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+{% block body %}
+<div id="map"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@MtBundle/Resources/public/js/*' output='js/compiled/mt_main.js' %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3sHBI3M6DkTuFb-YEONliD7A11-JHG5A&callback=initMap">
+    </script>
+{% endblock %}

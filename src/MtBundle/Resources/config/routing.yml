@@ -1,0 +1,3 @@
+mt_homepage:
+    path:     /
+    defaults: { _controller: MtBundle:Default:index }
