@@ -1,16 +1,16 @@
 {% extends '::base.html.twig' %}
 
 {% block stylesheets %}
-    {% stylesheets 'bundles/mt/css/*' filter='cssrewrite' output='css/compiled/mt.css' %}
+    {% stylesheets 'bundles/mt/css/*' filter='cssrewrite' output='css/mt.css' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
 {% block body %}
-<div id="map"></div>
+<div id="map" class="col-md-8"></div>
 {% endblock %}
 
 {% block javascripts %}
-    {% javascripts '@MtBundle/Resources/public/js/*' output='js/compiled/mt_main.js' %}
+    {% javascripts '@MtBundle/Resources/public/js/*' output='js/mt_main.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
