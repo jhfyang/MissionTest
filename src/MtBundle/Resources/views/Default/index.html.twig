@@ -1,18 +1,133 @@
 {% extends '::base.html.twig' %}
 
 {% block stylesheets %}
-    {% stylesheets 'bundles/mt/css/*' filter='cssrewrite' output='css/compiled/mt.css' %}
+    {% stylesheets 'bundles/mt/css/*' filter='cssrewrite'%}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        #map {
+            height: 100%;
+            min-height: 100%;
+        }
+
+        #list {
+            height: 100%;
+            overflow: scroll;
+        }
+
+        p span {
+            font-weight: bold;
+        }
+
+        .station-block {
+            border-bottom: 1px solid lightgrey;
+        }
+    </style>
 {% endblock %}
 {% block body %}
-<div id="map"></div>
+
+    <div id="map" class="col-md-8"></div>
+    <div id='list' class="col-md-4">
+        {% for station in stations %}
+            <div class="station-block">
+                <h3>{{ station.name }}</h3>
+                <p>Address: {{ station.address }}</p>
+                <p>Available bikes: <span style="color: darkgreen">{{ station.available_bikes }}</span></p>
+                <p>Available bikes stands: <span style="color: mediumblue">{{ station.available_bike_stands }}</span></p>
+            </div>
+        {% endfor %}
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}
-    {% javascripts '@MtBundle/Resources/public/js/*' output='js/compiled/mt_main.js' %}
+    <script>
+        function initMap() {
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: {lat: 48.857, lng: 2.338}
+            });
+
+            // Create an array of alphabetical characters used to label the markers.
+            var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+            // Add some markers to the map.
+            // Note: The code uses the JavaScript Array.prototype.map() method to
+            // create an array of markers based on a given "locations" array.
+            // The map() method here has nothing to do with the Google Maps API.
+            /*
+            var markers = locations.map(function(location, i, name) {
+                return new google.maps.Marker({
+                    position: location,
+                    label: labels[i % labels.length],
+                    title: name
+                });
+            });
+
+            */
+
+            setMarkers(map,locations);
+        }
+
+        function setMarkers(map,locations){
+
+            for (i = 0; i < locations.length; i++)
+            {
+
+                latlngset = new google.maps.LatLng(locations[i]['lat'], locations[i]['lng']);
+
+                var marker = new google.maps.Marker({
+                    map: map, title: name , position: latlngset
+                });
+                map.setCenter(marker.getPosition());
+
+
+                var title = "<h3>" + locations[i]['name'] +  '</h3>';
+                var address = "<p>Address: " + locations[i]['address'] +'</p></br>';
+                var available_bikes = "<p style='color: darkgreen;'>Available Bikes: " + locations[i]['available_bikes'] +'</p></br>';
+                var available_bike_stands = "<p style='color: mediumblue'>Available Bike Stands: " + locations[i]['available_bike_stands'] +'</p></br>';
+                var content =  title + address + available_bikes + available_bike_stands;
+
+                var infowindow = new google.maps.InfoWindow()
+
+                google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
+                    return function() {
+                        infowindow.setContent(content);
+                        infowindow.open(map,marker);
+                    };
+                })(marker,content,infowindow));
+
+            }
+        }
+
+        var locations = [
+            {% for station in stations %}
+            {
+                lat: {{ station.position.lat }},
+                lng: {{ station.position.lng }},
+                name: '{{ station.name }}',
+                address: '{{ station.address }}',
+                available_bikes: '{{ station.available_bikes }}',
+                available_bike_stands: '{{ station.available_bike_stands }}'
+            },
+            {% endfor %}
+
+        ]
+    </script>
+{#    {% javascripts '@MtBundle/Resources/public/js/*'%}
     <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    {% endjavascripts %}#}
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
     </script>
     <script async defer
