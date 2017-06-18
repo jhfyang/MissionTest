@@ -11,7 +11,7 @@ This Mission Test Project has for purpose to show a map which directly retrieves
 Clone the project to download its content
  ```
  cd projects/
- git clone ...
+ git clone https://github.com/jhfyang/MissionTest.git
  ```
  
 Make Composer install all dependencies for vendors
